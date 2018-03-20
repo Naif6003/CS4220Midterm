@@ -1,25 +1,3 @@
-// const
-//     http = require('http'),
-//     axios = require('axios')
-//
-// const key = '96b7802e7ab814942f3f0a68fb3bab73'
-//
-//   axios.get('https://developers.zomato.com/api/v2.1/categories', {
-//     headers: {
-//       Accept: 'application/json',
-//       'user-key': key
-//     }
-//   })
-//   .then(function(response){
-//     response.data.categories.forEach(elem => {
-//         console.log(elem.categories.name)
-//     })
-//   })
-//   .catch(function(err){
-//     alert(err)
-//   })
-
-
 const
     zomatoApi = require('zomatoApi'),
     inquirer = require('inquirer')
@@ -27,13 +5,33 @@ const
 const categories = () => {
     zomatoApi.categories()
         .then(result => {
-            console.log('-- Zomato App --')
-                result.data.categories.forEach(elem => {
-                        console.log(elem.categories.name)
+          return inquirer.prompt([{
+                type: 'checkbox',
+                message: 'select a Category: ',
+                name: 'Categories',
+                choices: () => {
+                let obj = []
+                    result.data.categories.forEach(category => {
+                        obj.push({
+                            name: category.categories.name,
+                            checked: false
+                        })
                      })
+                     return obj
+                            },
+                validate: function(result) {
+                    return true;
+                  }
+                }])
+              .then(answers => {
+                  // call the function for the categories using:
+                  // result, JSON.parse(JSON.stringify(answers))
+              })
         })
         .catch(err => console.log(err))
 }
+
+
 
 module.exports = {
     categories
