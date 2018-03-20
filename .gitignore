@@ -1,0 +1,6 @@
+#Directories to be ignores:
+/node_modules/
+
+#files to be ignored:
+.package-lock.json
+
