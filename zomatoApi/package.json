@@ -1,12 +1,12 @@
 {
-  "name": "midterm",
+  "name": "zomatoApi",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "all api url to fetch data",
+  "main": "funxtions.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Rohan Goel",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0"
