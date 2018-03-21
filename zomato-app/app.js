@@ -31,8 +31,32 @@ const categories = () => {
         .catch(err => console.log(err))
 }
 
+const searchrestaurants = (cityname) => {
+    zomatoApi.getcityidbyname(cityname)
+        .then(result => {
+            /* location_suggestions will bring all names around the world
+                which has the same (cityname) in it
+            */
+            result.data.location_suggestions.forEach(cityId => {
+                if(cityname === cityId.name){
+                    /*  after we matched the city name with its Id
+                        we call searchrestaurants function to get all restaurants
+                        is this city.
+                    */
+                    zomatoApi.searchrestaurants(cityId.id)
+                        .then(allRestInCity => {
+                            allRestInCity.data.restaurants.forEach(restaurant => {
+                                console.log(restaurant.restaurant.name)
+                            })
+                        })
 
+                }
+            })
+        })
+        .catch(err => console.log(err))
+}
 
 module.exports = {
-    categories
+    categories,
+    searchrestaurants
 }

@@ -14,6 +14,17 @@ const _fetch = (command) => {
         .catch(error => error.response.body)
 }
 
+// gets all the categories in the API
 exports.categories = () => {
         return _fetch('categories')
+}
+
+// get the id of the city by city name.
+exports.getcityidbyname = (cityname) => {
+    return _fetch(`cities?q=${cityname}`)
+}
+
+// get the restaurants in a specific city by city id.
+exports.searchrestaurants = (cityId) => {
+    return _fetch(`search?entity_id=${cityId}`)
 }
