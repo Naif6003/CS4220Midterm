@@ -4,11 +4,17 @@ const
 
 
 const flags = yargs.usage('$0: Usage <cmd> [options]')
-    // .command({
-    //     command: 'categories',
-    //     desc: 'Get all the categories in Zomato API ',
-    //     handler: (argv) => { app.categories() }
-    // })
+    .command({
+        command: 'search',
+        desc: 'find the city you want to search for.',
+        builder: (yargs) => {
+              return yargs.option('search', {
+                    alias: 'search',
+                    describe: 'Choose the city to find all the restaurants in it.'
+              })
+        },
+        handler: (argv) => { app.findcitiestosearch(argv.search) }
+    })
     .command({
         command: 'restaurants',
         desc: 'get restaurants by type in a specific city.',

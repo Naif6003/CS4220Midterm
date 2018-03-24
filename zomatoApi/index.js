@@ -26,7 +26,7 @@ exports.getcityidbyname = (cityname) => {
 
 // get the restaurants in a specific city by city id.
 exports.searchrestaurants = (cityId) => {
-    return _fetch(`search?entity_id=${cityId}`)
+    return _fetch(`search?entity_id=${cityId}&entity_type=city`)
 }
 
 // search for a restaurant type in a city

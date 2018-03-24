@@ -2,30 +2,49 @@ const
     zomatoApi = require('zomatoApi'),
     inquirer = require('inquirer')
 
-// const categories = () => {
-//     zomatoApi.categories()
-//         .then(result => {
-//           return inquirer.prompt([{
-//                 type: 'checkbox',
-//                 message: 'select a Category: ',
-//                 name: 'Categories',
-//                 choices: () => {
-//                 let obj = []
-//                     result.data.categories.forEach(category => {
-//                         obj.push({
-//                             name: category.categories.name,
-//                             checked: false
-//                         })
-//                      })
-//                      return obj
-//                             },
-//                 validate: function(result) {
-//                     return true;
-//                   }
-//                 }])
-//         })
-//         .catch(err => console.log(err))
-// }
+const findcitiestosearch = (cityname) => {
+    zomatoApi.getcityidbyname(cityname)
+        .then(result => {
+                return inquirer.prompt([{
+                    type: 'list',
+                    message: 'select the city you want',
+                    name: 'citysuggestions',
+                    choices: () => {
+                        let obj = []
+                         result.data.location_suggestions.forEach(citynamesuggestions => {
+                                  obj.push(citynamesuggestions.name)
+                            checked: false
+                        })
+                        return obj
+                    },
+                    validate: () => {
+                        return true
+                    }
+                }])
+
+        })
+        .then(answers => { // after finding the list of all correct cities we find the rest in them.
+                    let obj = zomatoApi.getcityidbyname(answers.citysuggestions)
+                    return [obj , answers] // the way to pass two arguments
+        })
+                .then(restaurants => {
+                    restaurants[0].then(result => {
+                        result.data.location_suggestions.forEach(city => {
+                                if(city.name === restaurants[1].citysuggestions){
+                                    zomatoApi.searchrestaurants(city.id)
+                                    .then(result => {
+                                        console.log("-----ALL RESTAURANTS IN ONE CITY----")
+                                        result.data.restaurants.forEach(city => {
+                                            console.log(city.restaurant.name)
+                                        })
+                                        console.log('------------------------------------')
+                                    })
+                                }
+                        })
+                    })
+        })
+        .catch(err => console.log(err))
+}
 
 const getrestaurantbytype = () => {
           return inquirer.prompt([{
@@ -52,16 +71,18 @@ const searchrestaurantsincity = (cityname) => {
                 which has the same (cityname) in it
             */
             result.data.location_suggestions.forEach(cityId => {
-                if(cityname === cityId.name.split(',')[0]){
+                if(cityname.replace(/([a-z])([A-Z])/, '$1 $2') === cityId.name.split(',')[0]){
                     /*  after we matched the city name with its Id
                         we call searchrestaurants function to get all restaurants
                         is this city.
                     */
                     zomatoApi.searchrestaurants(cityId.id)
                         .then(allRestInCity => {
+                            console.log('------------ Restaurants Names:')
                             allRestInCity.data.restaurants.forEach(restaurant => {
                                 console.log(restaurant.restaurant.name)
                             })
+                            console.log('------------------------------')
                         })
 
                 }
@@ -105,7 +126,7 @@ const restauranttypebycity = (answersObj) => {
 }
 
 module.exports = {
-    //categories,
+    findcitiestosearch,
     searchrestaurantsincity,
     restauranttypebycity,
     getrestaurantbytype
