@@ -2,7 +2,6 @@ const
      config = require('./config'),
      axios = require('axios')
 
-
 _fetch = (command) => {
     return axios.get(`${config.url}/${command}`, {
         headers: {

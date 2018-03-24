@@ -1,7 +1,6 @@
 const
     zomatoApi = require('zomatoApi'),
     inquirer = require('inquirer')
-
 // /**
 //  * Search for Restaurants
 //  * 
