@@ -1,8 +1,11 @@
-
-#Directories to be ignores:
+# Directories to be ignored:
 /zomato-app/node_modules/
 /zomatoApi/node_modules/
 
-#files to be ignored:
+# Files to be ignored:
 /zomato-app/package-lock.json
 /zomatoApi/package-lock.json
+/zomato-app/package.json
+/zomatoApi/package.json
+
+
