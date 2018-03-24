@@ -5,4 +5,6 @@
 # Files to be ignored:
 /zomato-app/package-lock.json
 /zomatoApi/package-lock.json
+/zomato-app/package.json
+/zomatoApi/package.json
 
