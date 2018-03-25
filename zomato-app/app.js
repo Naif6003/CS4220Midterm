@@ -231,26 +231,7 @@ const searchrestaurantsincity = (cityname) => {
                     })
         })
         .catch(err => console.log(err))
-    }else{
-        console.log("Please provide a city name!");
-    }
 }
-
-const getrestaurantbytype = () => {
-          return inquirer.prompt([{
-                  type: 'input',
-                  message: "Enter the city you want to search in: ",
-                  name: "cityName",
-         },{
-             type: 'input',
-             message: "Enter the type of the restaurant: (Café, Bakery or Fast Food):",
-             name: "restaurantType",
-        }])
-        .then(results => {
-            restauranttypebycity(results)
-        })
-        .catch(err => console.log(err))
-    }
 
 
 // get all restaurants in a city by city_id
@@ -343,7 +324,7 @@ const restauranttypebycity = (answersObj) => {
                             {name:"Get all restaurants in the city",value:3}
                             ]
                             return options;
-            },  
+            },
             validate: () => {
                 return true
             }
@@ -361,7 +342,7 @@ const restauranttypebycity = (answersObj) => {
                             let obj = []
                             result.data.location_suggestions.forEach(cityId =>   {
                                 if(cityname  ===cityId.name.split(',')[0])
-                                     { 
+                                     {
                                       let v={
                                      name:cityId.name,
                                       value:cityId.id
@@ -370,19 +351,19 @@ const restauranttypebycity = (answersObj) => {
                                  })
                                  checked: false
                                  return obj;
-                                },       
+                                },
                         validate: () => {
                             return true
                         }
                     }])
-    
+
             })
             .catch(err => console.log(err))
             .then(answers => { // after finding the list of all correct cities we find the rest in them.
                 //console.log(answers);
                 displayOptions()
                 .then(filterr=>{
-                    
+
                     if(filterr.filterType==1)
                     {
                         zomatoApi.getestablishmenttypebyid(answers.citysuggestions)
@@ -397,7 +378,7 @@ const restauranttypebycity = (answersObj) => {
                                          allRestInCity.data.establishments.forEach(elem => {
                                             if(elem.establishment.name===inputt.Typerestaurants)
                                                 typeid=elem.establishment.id;
-                                            })          
+                                            })
                                           searchForTypes(answers.citysuggestions,typeid);
                                     })
                                     .catch(err => console.log(err))
@@ -409,24 +390,24 @@ const restauranttypebycity = (answersObj) => {
                         zomatoApi.cuisines(answers.citysuggestions)
                                     .then(result => {
                                         let ListOfCuisines=[];
-                                        result.data.cuisines.forEach(elem => 
+                                        result.data.cuisines.forEach(elem =>
                                                 {
                                                 var cuisine={
                                                 name: elem.cuisine.cuisine_name,
                                                 value: elem.cuisine.cuisine_id
-                                                } 
+                                                }
                                         ListOfCuisines.push(cuisine);
                                              })
-                                       //display cuisines     
+                                       //display cuisines
                                         displayCuisines(ListOfCuisines)
                                             .then(input => {
                                                 let commaseperatedValue=input.restaurants.join(", ")
                                                 listRestaurantsFCuisine(answers.citysuggestions,commaseperatedValue);
                                              })
                         .catch(err => console.log(err))
-                    
-                         })   
-            
+
+                         })
+
                     }
                     else{
                         zomatoApi.searchrestaurants(answers.citysuggestions)
@@ -434,25 +415,25 @@ const restauranttypebycity = (answersObj) => {
                                             getDetailsofRestaurant(resultt.data.restaurants);
                                         })
                     }
-                    })  
-              
+                    })
+
              })
              .catch(err => console.log(err))
-      
+
     }
     const displayCuisines = (result) => {
-        //Launch the prompt interface 
+        //Launch the prompt interface
         return inquirer.prompt([{
             type: 'checkbox',
             message: 'Filter restaurants by Cuisines ',
             name: 'restaurants',
-            choices: result,        
+            choices: result,
             validate: (input) => {
                  if (input.length == 0) {
                     return 'select atlease one cuisine';
                   }
                   return true;
-            }  
+            }
         }])
     }
 
@@ -461,29 +442,29 @@ const restauranttypebycity = (answersObj) => {
             type: 'list',
             message: 'select Types of Restaurant to Display the restaurants',
             name: 'Typerestaurants',
-            choices: result,        
+            choices: result,
             validate: (input) => {
-                
+
                   if (input.length == 0) {
                     return 'all';
                   }
                   return true;
-            }  
+            }
         }])
     }
-  
-    
-    
+
+
+
         const listRestaurantsFCuisine = (cityId,result) => {
             zomatoApi.searchForCuisine(cityId,result)
                 .then(result => {
-                    
+
                     getDetailsofRestaurant(result.data.restaurants);
-                 
+
                 })
                 .catch(err => console.log(err))
         }
-        
+
         const searchForTypes = (cityId,id) => {
             zomatoApi.searchForTypes(cityId,id)
                 .then(result => {
@@ -491,11 +472,11 @@ const restauranttypebycity = (answersObj) => {
                  })
                 .catch(err => console.log(err))
         }
-        
+
 
         const getDetailsofRestaurant =(restuarantList)=>{
             var restuarantChoices = [];
-        
+
             restuarantList.forEach(restuarantObj =>{
                 var restaurantChoice = {
                     name: restuarantObj.restaurant.name,
@@ -514,9 +495,9 @@ const restauranttypebycity = (answersObj) => {
         }])
         .then(choice =>{
             let restaurant = choice.restaurant;
-        
+
             displayRestaurantInformation(restaurant);
-        
+
             getRatingsAndReviews(restaurant);
         });
         }
