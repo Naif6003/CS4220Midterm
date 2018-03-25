@@ -22,7 +22,6 @@ const getRestaurantsByCity = (cityName) => {
             .then(response =>{
                 // let citiesList = response.data.cities;
                 let restuarantList = response.data.restaurants;
-                console.log(restuarantList);
 
                 if (restuarantList === undefined || restuarantList.length == 0){
                     console.log("No Restaurants were found with that name! :(, please make sure you entered the name correctly, or wrapped it in quotes (\" \")");
