@@ -3,7 +3,7 @@ const
      axios = require('axios')
 
 
-const _fetch = (command) => {
+_fetch = (command) => {
     return axios.get(`${config.url}/${command}`, {
         headers: {
             Accept: 'application/json',
@@ -37,4 +37,16 @@ exports.searchrestauranttype = (entity_id, establishment_type) => {
 // get establishment_type by city_id
 exports.getestablishmenttypebyid = (city_id) => {
     return _fetch(`establishments?city_id=${city_id}`)
+}
+// get restaurant reviews
+exports.getrestaurantreviews = (res_id) => {
+    return _fetch(`reviews?res_id=${res_id}`)
+}
+
+exports.getRestaurantListByCity = (cityName) => {
+    return _fetch(`search?entity_type=city&q=${cityName}`)
+}
+
+exports.getRestaurantReviewsAndRatings = (restaurantID) =>{
+    return _fetch(`reviews?res_id=${restaurantID}`)
 }
