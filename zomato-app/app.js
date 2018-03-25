@@ -2,8 +2,109 @@ const
     zomatoApi = require('zomatoApi'),
     inquirer = require('inquirer')
 
+// /**
+//  * Search for Restaurants
+//  *
+//  * Asks for City name, and then defers to getter(s)
+//  */
+// const searchRestaurants = () => {
+//     console.log("IN HERE");
+// }
+
+/**
+  * Get Restaurants By City
+  *
+  * Ex: cli.js search --city "Los Angeles"
+*/
+
+const getRestaurantsByCity = (cityName) => {
+    if(cityName){
+        zomatoApi.getRestaurantListByCity(cityName)
+            .then(response =>{
+                let restuarantList = response.data.restaurants;
+
+                if (restuarantList === undefined || restuarantList.length == 0){
+                    console.log("No Restaurants were found in this city! :(, please make sure you entered the name correctly, or wrapped it in quotes (\" \")");
+                }else{
+                    // We have restuarants
+                    // Next, create a better list to show the user
+                    var restuarantChoices = [];
+
+                    restuarantList.forEach(restuarantObj =>{
+                        var restaurantChoice = {
+                            name: restuarantObj.restaurant.name,
+                            value: restuarantObj.restaurant
+                        }
+
+                        restuarantChoices.push(restaurantChoice);
+                    })
+
+                    return inquirer.prompt([{
+                        type: 'list',
+                        message: 'Select a Restaurant to learn more information:',
+                        name: 'restaurant',
+                        choices: restuarantChoices,
+                        validate: () => {
+                            return true
+                        }
+                    }])
+                    .then(choice =>{
+                        let restaurant = choice.restaurant;
+
+                        displayRestaurantInformation(restaurant);
+
+                        getRatingsAndReviews(restaurant);
+                    });
+                }
+            })
+    }else{
+        console.log("ERROR! Please provide the name of a City");
+    }
+}
+
+const displayRestaurantInformation = (restaurant) => {
+    console.log(restaurant.name + "\n Address:" + restaurant.location.address + "\n Cuisine: " + restaurant.cuisines + "\n View the menu here: " + restaurant.menu_url);
+}
+
+const getRatingsAndReviews = (restaurant) => {
+    return inquirer.prompt([{
+        type: 'confirm',
+        message: "Do you want rating/reviews for: " + restaurant.name,
+        name: "wantsRatingsAndReviews",
+    }])
+    .then(answer => {
+        let wantsRatingsAndReviews = answer.wantsRatingsAndReviews;
+
+        if(wantsRatingsAndReviews){
+            zomatoApi.getRestaurantReviewsAndRatings(restaurant.id)
+            .then(response =>{
+                let ratingsAndReviews = "";
+
+                ratingsAndReviews += "\n\n" + restaurant.name + " - Ratings And Reviews \n"
+                ratingsAndReviews += "Average User Rating: " + restaurant.user_rating.aggregate_rating + " - " + restaurant.user_rating.rating_text + "\n";
+                ratingsAndReviews += "Based On " + restaurant.user_rating.votes + " Reviews";
+                ratingsAndReviews += "\n-----------------------------------\n";
+
+                let reviewResponse = response.data.user_reviews;
+
+                let reviewList = reviewResponse.forEach(review =>{
+                    review = review.review;
+                    // console.log(review);
+                    ratingsAndReviews += review.user.name + " Said: \n" + review.review_text + "\nRating: " + review.rating + " - " + review.rating_text;
+                    ratingsAndReviews += "\n-----------------------------------\n";
+                });
+
+                console.log(ratingsAndReviews);
+            })
+        }else{
+            console.log("Goodbye");
+        }
+    })
+}
+
 const findcitiestosearch = (cityname) => {
-    zomatoApi.getcityidbyname(cityname)
+    if(cityname){
+        zomatoApi.getcityidbyname(cityname)
         .then(result => {
                 return inquirer.prompt([{
                     type: 'list',
@@ -44,6 +145,9 @@ const findcitiestosearch = (cityname) => {
                     })
         })
         .catch(err => console.log(err))
+    }else{
+        console.log("Please provide a city name!");
+    }
 }
 
 const getrestaurantbytype = () => {
@@ -68,7 +172,7 @@ const searchrestaurantsincity = (cityname) => {
     zomatoApi.getcityidbyname(cityname)
         .then(result => {
             /* location_suggestions will bring all names around the world
-                which has the same (cityname) in it
+                which has the same restaurant name
             */
             result.data.location_suggestions.forEach(cityId => {
                 if(cityname.replace(/([a-z])([A-Z])/, '$1 $2') === cityId.name.split(',')[0]){
@@ -89,6 +193,22 @@ const searchrestaurantsincity = (cityname) => {
             })
         })
         .catch(err => console.log(err))
+}
+
+const getrestaurantrevs = () => {
+    return inquirer.prompt([{
+        type: 'input',
+        message: "Enter the City that the Restaurant is Located in: ",
+        name: "cityName",
+    },{
+      type: 'input',
+      message: 'Enter Restaurant Name for Ratings and Reviews: ',
+      name: "restaurantName",
+  }])
+  .then(params => {
+      searchrestaurantreviews(params)
+  })
+  .catch(err => console.log(err))
 }
 
 
@@ -125,9 +245,15 @@ const restauranttypebycity = (answersObj) => {
         .catch(err => console.log(err))
 }
 
+
+
+
+
 module.exports = {
+    getRestaurantsByCity,
     findcitiestosearch,
     searchrestaurantsincity,
     restauranttypebycity,
     getrestaurantbytype
+
 }

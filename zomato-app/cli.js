@@ -6,14 +6,14 @@ const
 const flags = yargs.usage('$0: Usage <cmd> [options]')
     .command({
         command: 'search',
-        desc: 'find the city you want to search for.',
+        desc: 'Find a restaurant based on a city.',
         builder: (yargs) => {
-              return yargs.option('search', {
-                    alias: 'search',
-                    describe: 'Choose the city to find all the restaurants in it.'
-              })
+            return yargs.option('city', {
+                alias: 'city',
+                describe: 'The name of the city you want to search.'
+            })
         },
-        handler: (argv) => { app.findcitiestosearch(argv.search) }
+        handler: (argv) => { app.getRestaurantsByCity(argv.city) }
     })
     .command({
         command: 'restaurants',
@@ -31,5 +31,12 @@ const flags = yargs.usage('$0: Usage <cmd> [options]')
       },
       handler: (argv) => { app.searchrestaurantsincity(argv.city) }
     })
+    .command({
+        command: 'reviews',
+        desc: 'get restaurants reviews',
+        handler: (argv) => { app.getrestaurantrevs() }
+    })
+
+
     .help('help')
     .argv
