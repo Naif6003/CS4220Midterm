@@ -37,7 +37,7 @@ const flags = yargs.usage('$0: Usage <cmd> [options]')
       builder: (yargs) => {
             return yargs.option('city', {
                     alias: 'city',
-                    describe: 'city name for a specific restaurants (city --city London)'
+                    describe: 'city name for a specific restaurants (city --city "London")'
             })
       },
       handler: (argv) => { app.searchrestaurantsincity(argv.city) }
