@@ -50,3 +50,21 @@ exports.getRestaurantListByCity = (cityName) => {
 exports.getRestaurantReviewsAndRatings = (restaurantID) =>{
     return _fetch(`reviews?res_id=${restaurantID}`)
 }
+
+exports.cuisines = (cityId) => {
+    return _fetch(`/cuisines?city_id=${cityId}`)
+}
+
+exports.searchForCuisine = (cityId,ids) => {
+   
+    return _fetch(`/search?entity_id=${cityId}&entity_type=city&cuisines=${ids}`)
+}
+
+exports.establishments = (cityId) => {
+    
+    return _fetch(`/establishments?city_id=${cityId}`)
+}
+
+exports.searchForTypes = (cityId,id) => {
+    return _fetch(`/search?entity_id=${cityId}&entity_type=city&establishment_type=${id}`)
+}

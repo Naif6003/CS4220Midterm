@@ -42,7 +42,16 @@ const flags = yargs.usage('$0: Usage <cmd> [options]')
       },
       handler: (argv) => { app.searchrestaurantsincity(argv.city) }
     })
-
-
+	.command({
+        command: 'all',
+        desc: 'find the city you want to search for.',
+        builder: (yargs) => {
+              return yargs.option('city', {
+                    alias: 'search',
+                    describe: 'Choose the city to find all the restaurants in it.'
+              })
+        },
+        handler: (argv) => { app.findcitiestosearchExt(argv.search) }
+    })
     .help('help')
     .argv
