@@ -233,35 +233,6 @@ const searchrestaurantsincity = (cityname) => {
         .catch(err => console.log(err))
 }
 
-
-// get all restaurants in a city by city_id
-const searchrestaurantsincity = (cityname) => {
-    zomatoApi.getcityidbyname(cityname)
-        .then(result => {
-            /* location_suggestions will bring all names around the world
-                which has the same restaurant name
-            */
-            result.data.location_suggestions.forEach(cityId => {
-                if(cityname.replace(/([a-z])([A-Z])/, '$1 $2') === cityId.name.split(',')[0]){
-                    /*  after we matched the city name with its Id
-                        we call searchrestaurants function to get all restaurants
-                        is this city.
-                    */
-                    zomatoApi.searchrestaurants(cityId.id)
-                        .then(allRestInCity => {
-                            console.log('------------ Restaurants Names:')
-                            allRestInCity.data.restaurants.forEach(restaurant => {
-                                console.log(restaurant.restaurant.name)
-                            })
-                            console.log('------------------------------')
-                        })
-
-                }
-            })
-        })
-        .catch(err => console.log(err))
-}
-
 const getrestaurantrevs = () => {
     return inquirer.prompt([{
         type: 'input',
