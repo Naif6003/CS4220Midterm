@@ -3,7 +3,7 @@ const
      axios = require('axios')
 
 
-const _fetch = (command) => {
+_fetch = (command) => {
     return axios.get(`${config.url}/${command}`, {
         headers: {
             Accept: 'application/json',
@@ -14,33 +14,17 @@ const _fetch = (command) => {
         .catch(error => error.response.body)
 }
 
+// gets all the categories in the API
+exports.categories = () => {
+        return _fetch('categories')
+}
 
-
+// get the id of the city by city name.
 exports.getcityidbyname = (cityname) => {
     return _fetch(`cities?q=${cityname}`)
 }
 
-
-exports.cuisines = (cityId) => {
-    return _fetch(`/cuisines?city_id=${cityId}`)
-}
-
-
-
-exports.searchForCuisine = (cityId,ids) => {
-   
-    return _fetch(`/search?entity_id=${cityId}&entity_type=city&cuisines=${ids}`)
-}
-
-/*
-exports.establishments = (cityId) => {
-    
-    return _fetch(`/establishments?city_id=${cityId}`)
-}
-exports.searchForTypes = (cityId,id) => {
-
-    return _fetch(`/search?entity_id=${cityId}&entity_type=city&establishment_type=${id}`)
-    // get the restaurants in a specific city by city id.
+// get the restaurants in a specific city by city id.
 exports.searchrestaurants = (cityId) => {
     return _fetch(`search?entity_id=${cityId}&entity_type=city`)
 }
@@ -67,7 +51,29 @@ exports.getRestaurantReviewsAndRatings = (restaurantID) =>{
     return _fetch(`reviews?res_id=${restaurantID}`)
 }
 
-exports.categories = () => {
-        return _fetch('categories')
+
+
+
+exports.cuisines = (cityId) => {
+    return _fetch(`/cuisines?city_id=${cityId}`)
 }
-}*/
+
+
+
+exports.searchForCuisine = (cityId,ids) => {
+   
+    return _fetch(`/search?entity_id=${cityId}&entity_type=city&cuisines=${ids}`)
+}
+
+
+exports.establishments = (cityId) => {
+    
+    return _fetch(`/establishments?city_id=${cityId}`)
+}
+exports.getestablishmenttypebyid = (city_id) => {
+    return _fetch(`establishments?city_id=${city_id}`)
+}
+exports.searchForTypes = (cityId,id) => {
+    return _fetch(`/search?entity_id=${cityId}&entity_type=city&establishment_type=${id}`)
+}
+
