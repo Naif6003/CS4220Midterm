@@ -16,15 +16,12 @@ const
   *
   * Ex: cli.js details --city "Los Angeles"
 */
-
-
 const getRestaurantsByCity = (cityName) => {
     if(cityName){
         zomatoApi.getRestaurantListByCity(cityName)
             .then(response =>{
                 // let citiesList = response.data.cities;
                 let restuarantList = response.data.restaurants;
-                
 
                 if (restuarantList === undefined || restuarantList.length == 0){
                     console.log("No Restaurants were found with that name! :(, please make sure you entered the name correctly, or wrapped it in quotes (\" \")");
@@ -108,6 +105,92 @@ const getRatingsAndReviews = (restaurant) => {
 const findcitiestosearch = (cityname) => {
     if(cityname){
         zomatoApi.getcityidbyname(cityname)
+        .then(result => {
+                return inquirer.prompt([{
+                    type: 'list',
+                    message: 'select the city you want',
+                    name: 'citysuggestions',
+                    choices: () => {
+                        let obj = []
+                         result.data.location_suggestions.forEach(citynamesuggestions => {
+                                  obj.push(citynamesuggestions.name)
+                            checked: false
+                        })
+                        return obj
+                    },
+                    validate: () => {
+                        return true
+                    }
+                }])
+
+        })
+        .then(answers => { // after finding the list of all correct cities we find the rest in them.
+                    let obj = zomatoApi.getcityidbyname(answers.citysuggestions)
+                    return [obj , answers] // the way to pass two arguments
+        })
+                .then(restaurants => {
+                    restaurants[0].then(result => {
+                        result.data.location_suggestions.forEach(city => {
+                                if(city.name === restaurants[1].citysuggestions){
+                                    zomatoApi.searchrestaurants(city.id)
+                                    .then(result => {
+                                        console.log("-----ALL RESTAURANTS IN ONE CITY----")
+                                        result.data.restaurants.forEach(city => {
+                                            console.log(city.restaurant.name)
+                                        })
+                                        console.log('------------------------------------')
+                                    })
+                                }
+                        })
+                    })
+        })
+        .catch(err => console.log(err))
+    }else{
+        console.log("Please provide a city name!");
+    }
+}
+
+const getrestaurantbytype = () => {
+          return inquirer.prompt([{
+                  type: 'input',
+                  message: "Enter the city you want to search in: ",
+                  name: "cityName",
+         },{
+             type: 'input',
+             message: "Enter the type of the restaurant: (Café, Bakery or Fast Food):",
+             name: "restaurantType",
+        }])
+        .then(results => {
+            restauranttypebycity(results)
+        })
+        .catch(err => console.log(err))
+    }
+
+
+// get all restaurants in a city by city_id
+const searchrestaurantsincity = (cityname) => {
+    zomatoApi.getcityidbyname(cityname)
+        .then(result => {
+            /* location_suggestions will bring all names around the world
+                which has the same restaurant name
+            */
+            result.data.location_suggestions.forEach(cityId => {
+                if(cityname.replace(/([a-z])([A-Z])/, '$1 $2') === cityId.name.split(',')[0]){
+                    /*  after we matched the city name with its Id
+                        we call searchrestaurants function to get all restaurants
+                        is this city.
+                    */
+                    zomatoApi.searchrestaurants(cityId.id)
+                        .then(allRestInCity => {
+                            console.log('------------ Restaurants Names:')
+                            allRestInCity.data.restaurants.forEach(restaurant => {
+                                console.log(restaurant.restaurant.name)
+                            })
+                            console.log('------------------------------')
+                        })
+
+                }
+            })
         .then(result => {
                 return inquirer.prompt([{
                     type: 'list',
@@ -441,7 +524,7 @@ const restauranttypebycity = (answersObj) => {
 
 
 module.exports = {
-	findcitiestosearchExt,
+  	findcitiestosearchExt,
     getRestaurantsByCity,
     findcitiestosearch,
     searchrestaurantsincity,

@@ -53,8 +53,5 @@ const flags = yargs.usage('$0: Usage <cmd> [options]')
         },
         handler: (argv) => { app.findcitiestosearchExt(argv.search) }
     })
-  
-
-
     .help('help')
     .argv
