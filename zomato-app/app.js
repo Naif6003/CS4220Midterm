@@ -14,9 +14,8 @@ const
 /**
   * Get Restaurants By City
   *
-  * Ex: cli.js search --city "Los Angeles"
+  * Ex: cli.js details --city "Los Angeles"
 */
-
 const getRestaurantsByCity = (cityName) => {
     if(cityName){
         zomatoApi.getRestaurantListByCity(cityName)

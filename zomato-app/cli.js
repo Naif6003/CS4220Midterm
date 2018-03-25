@@ -4,21 +4,32 @@ const
 
 
 const flags = yargs.usage('$0: Usage <cmd> [options]')
-    .command({
-        command: 'search',
-        desc: 'Find a restaurant based on a city.',
-        builder: (yargs) => {
-            return yargs.option('city', {
-                alias: 'city',
-                describe: 'The name of the city you want to search.'
-            })
-        },
-        handler: (argv) => { app.getRestaurantsByCity(argv.city) }
-    })
+.command({
+    command: 'search',
+    desc: 'find the city you want to search for.',
+    builder: (yargs) => {
+          return yargs.option('search', {
+                alias: 'search',
+                describe: 'Choose the city to find all the restaurants in it.'
+          })
+    },
+    handler: (argv) => { app.findcitiestosearch(argv.search) }
+})
     .command({
         command: 'restaurants',
         desc: 'get restaurants by type in a specific city.',
         handler: (argv) => { app.getrestaurantbytype() }
+    })
+    .command({
+        command: 'details',
+        desc: 'List restaurant details. Example: cli.js details --city Los Angeles',
+        builder: (yargs) => {
+            return yargs.option('city', {
+                alias: 'city',
+                describe: 'The name of the city the restaurant is located in'
+            })
+        },
+        handler: (argv) => { app.getRestaurantsByCity(argv.city) }
     })
     .command({
       command: 'city',
@@ -30,11 +41,6 @@ const flags = yargs.usage('$0: Usage <cmd> [options]')
             })
       },
       handler: (argv) => { app.searchrestaurantsincity(argv.city) }
-    })
-    .command({
-        command: 'reviews',
-        desc: 'get restaurants reviews',
-        handler: (argv) => { app.getrestaurantrevs() }
     })
 
 
