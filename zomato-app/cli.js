@@ -49,11 +49,5 @@ const flags = yargs.usage('$0: Usage <cmd> [options]')
         handler: (argv) => { app.cuisines(argv.city) }
      })
 
-    .command({
-        command: 'establishments',
-        desc: 'get all the Types of Restaurant for the city',
-        handler: (argv) => { app.establishments(1) }
-    })
-   
     .help('help')
     .argv
