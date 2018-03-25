@@ -20,10 +20,12 @@ const getRestaurantsByCity = (cityName) => {
     if(cityName){
         zomatoApi.getRestaurantListByCity(cityName)
             .then(response =>{
+                // let citiesList = response.data.cities;
                 let restuarantList = response.data.restaurants;
+                console.log(restuarantList);
 
                 if (restuarantList === undefined || restuarantList.length == 0){
-                    console.log("No Restaurants were found in this city! :(, please make sure you entered the name correctly, or wrapped it in quotes (\" \")");
+                    console.log("No Restaurants were found with that name! :(, please make sure you entered the name correctly, or wrapped it in quotes (\" \")");
                 }else{
                     // We have restuarants
                     // Next, create a better list to show the user
